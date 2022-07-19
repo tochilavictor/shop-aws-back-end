@@ -20,7 +20,8 @@ export const getProductsById: Handler = async (event) => {
     }
 
     return formatJSONResponse(product);
-  } catch {
+  } catch (e) {
+    console.log("getProductsById error", e);
     return formatJSONResponse({ error: `internal server error` }, 500);
   }
 };
