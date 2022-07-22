@@ -7,7 +7,8 @@ export const getProductsList: Handler = async () => {
   try {
     const products = await ProductsClient.getProducts();
     return formatJSONResponse({ products });
-  } catch {
+  } catch (e) {
+    console.log("getProductsList error", e);
     return formatJSONResponse({ error: `internal server error` }, 500);
   }
 };
