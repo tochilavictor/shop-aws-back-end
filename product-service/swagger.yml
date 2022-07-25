@@ -1,0 +1,80 @@
+swagger: "2.0"
+info:
+  description: "product service API for CloudX - Viktar Tachyla"
+  version: "1.0.0"
+  title: "Product Service for CloudX course"
+  contact:
+    email: "Viktar_Tachyla@epam.com"
+host: "1ws0yt9cx5.execute-api.eu-west-1.amazonaws.com"
+basePath: "/dev"
+tags:
+  - name: "product"
+    description: "Access to training project products"
+schemes:
+  - "https"
+  - "http"
+paths:
+  /products:
+    get:
+      tags:
+        - "product"
+      summary: "Get list of products."
+      description: "Get full list of products in store."
+      operationId: "getProductsList"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+        "500":
+          description: "internal server error"
+  /products/{productId}:
+    get:
+      tags:
+        - "product"
+      summary: "Find product by ID"
+      description: "Returns a single product"
+      operationId: "getProductById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "ID of product to return"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "400":
+          description: "when id is not found"
+        "404":
+          description: "when product with id is not found"
+        "500":
+          description: "internal server error"
+definitions:
+  Product:
+    type: "object"
+    required:
+      - "id"
+      - "title"
+      - "price"
+      - "count"
+    properties:
+      id:
+        type: "string"
+        example: "7567ec4b-b10c-48c5-9345-fc73c48a80a4"
+      title:
+        type: "string"
+      price:
+        type: "number"
+      count:
+        type: "integer"
+      description:
+        type: "string"
