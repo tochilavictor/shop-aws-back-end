@@ -4,6 +4,7 @@
   "description": "Serverless aws-nodejs-typescript template",
   "main": "serverless.ts",
   "scripts": {
+    "test": "yarn run jest",
     "deploy": "serverless deploy",
     "offline": "serverless offline --noPrependStageInUrl"
   },
