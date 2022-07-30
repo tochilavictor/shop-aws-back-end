@@ -7,9 +7,11 @@ import { ProductSchema, CreateProductPayload } from "./createProductPayload";
 
 export const createProduct: Handler = async (event) => {
   try {
+    console.log("createProductEvent", JSON.stringify(event));
     const payload: CreateProductPayload = await ProductSchema.validateAsync(
       event.body
     );
+    console.log("createProductArguments", JSON.stringify(payload));
 
     const status = await ProductsClient.createProduct(payload);
     return status
