@@ -8,6 +8,7 @@ export default {
         bucket: 'cloudx-s3-import',
         event: 's3:ObjectCreated:*',
         existing: true,
+        rules: [{ prefix: 'uploaded/' }],
       },
     },
   ],
