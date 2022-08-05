@@ -1,11 +1,13 @@
 import csv from 'csv-parser';
 import S3, { CopyObjectRequest, DeleteObjectRequest } from 'aws-sdk/clients/s3';
+import SQS, { SendMessageRequest } from 'aws-sdk/clients/sqs';
 import type { Handler, S3Event } from 'aws-lambda';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 import { Readable } from 'stream';
 
 const s3 = new S3({ region: 'eu-west-1' });
+const sqs = new SQS({ region: 'eu-west-1' });
 
 const importFileParser: Handler = async (event: S3Event) => {
   try {
@@ -19,14 +21,25 @@ const importFileParser: Handler = async (event: S3Event) => {
       const s3stream = s3.getObject(params).createReadStream();
 
       const parsedResults = await parseStreamByCSVParser(s3stream);
+      for (const productParsedItem of parsedResults) {
+        try {
+          const sqsRequest: SendMessageRequest = {
+            QueueUrl: process.env.SQS_URL,
+            MessageBody: JSON.stringify(productParsedItem),
+          };
+          await sqs.sendMessage(sqsRequest).promise();
+        } catch (e) {
+          console.log('sqs write error', e);
+        }
+      }
       console.log('parsedResults', parsedResults);
 
       const success = await copyObjectToParsedFolder(bucket, object);
       if (success) {
         await deleteParsedFile(bucket, object);
+        return formatJSONResponse({ success: true });
       }
     }
-    return formatJSONResponse({ success: true });
   } catch (e) {
     console.log('importFileParser error', e);
     return formatJSONResponse({ error: `internal server error` }, 500);
@@ -67,8 +80,8 @@ async function copyObjectToParsedFolder(
   }
 }
 
-async function parseStreamByCSVParser(s3stream: Readable) {
-  const parsedData = await new Promise((resolve, reject) => {
+async function parseStreamByCSVParser(s3stream: Readable): Promise<Array<any>> {
+  const parsedData: Array<any> = await new Promise((resolve, reject) => {
     const results = [];
     s3stream
       .pipe(csv())
