@@ -8,8 +8,4 @@ jspm_packages
 # esbuild directories
 .webpack
 
-<<<<<<< HEAD
-.env
-=======
 env.json
->>>>>>> feat/task-4
