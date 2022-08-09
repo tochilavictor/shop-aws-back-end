@@ -3,11 +3,13 @@ import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 import ProductsClient from "src/client/productsClient";
 
-export const getProductsList: Handler = async () => {
+export const getProductsList: Handler = async (event) => {
   try {
+    console.log("getProductsListEvent", JSON.stringify(event));
     const products = await ProductsClient.getProducts();
     return formatJSONResponse({ products });
-  } catch {
+  } catch (e) {
+    console.log("getProductsList error", e);
     return formatJSONResponse({ error: `internal server error` }, 500);
   }
 };
