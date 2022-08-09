@@ -4,7 +4,10 @@ import { middyfy } from "@libs/lambda";
 import ProductsClient from "src/client/productsClient";
 
 export const getProductsById: Handler = async (event) => {
+  console.log("getProductsByIdEvent", JSON.stringify(event));
   const { productId } = event.pathParameters;
+  console.log("productIdArgument", productId);
+
   if (!productId) {
     return formatJSONResponse({ error: `Provide product id` }, 400);
   }

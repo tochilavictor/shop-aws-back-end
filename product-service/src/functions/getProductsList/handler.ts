@@ -3,8 +3,9 @@ import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 import ProductsClient from "src/client/productsClient";
 
-export const getProductsList: Handler = async () => {
+export const getProductsList: Handler = async (event) => {
   try {
+    console.log("getProductsListEvent", JSON.stringify(event));
     const products = await ProductsClient.getProducts();
     return formatJSONResponse({ products });
   } catch (e) {
