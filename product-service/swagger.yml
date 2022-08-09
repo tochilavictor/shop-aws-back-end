@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "product service API for CloudX - Viktar Tachyla"
-  version: "1.0.0"
+  version: 1.0.2
   title: "Product Service for CloudX course"
   contact:
     email: "Viktar_Tachyla@epam.com"
@@ -32,6 +32,28 @@ paths:
               $ref: "#/definitions/Product"
         "500":
           description: "internal server error"
+    post:
+      tags:
+        - "product"
+      summary: "Create new."
+      description: "create new product."
+      operationId: "createProduct"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Product to be added to the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Product"
+      responses:
+        "200":
+          description: "successful operation"
+        "400":
+          description: "invalid request model"
+        "500":
+          description: "unsuccessful create, transaction rolled back "
   /products/{productId}:
     get:
       tags:
