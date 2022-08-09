@@ -16,10 +16,10 @@ export const catalogBatchProcess: Handler = async (event: SQSEvent) => {
     let lowestPrice: Number = null;
     for (const item of event.Records) {
       const payload: CreateProductPayload = JSON.parse(item.body);
+      await ProductSchema.validateAsync(payload);
       if (lowestPrice === null || lowestPrice > payload.price) {
         lowestPrice = payload.price;
       }
-      await ProductSchema.validateAsync(payload);
       const status = await ProductsClient.createProduct(payload);
       console.log("productCreationStatus", status);
       if (!status) {
