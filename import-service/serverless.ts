@@ -38,6 +38,21 @@ const serverlessConfiguration: AWS = {
       SQS_URL: 'https://sqs.eu-west-1.amazonaws.com/566100373539/CloudX-queue',
     },
   },
+  resources: {
+    Resources: {
+      GatewayResponseDefault4XX: {
+        Type: 'AWS::ApiGateway::GatewayResponse',
+        Properties: {
+          ResponseParameters: {
+            'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+            'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+          },
+          ResponseType: 'DEFAULT_4XX',
+          RestApiId: { Ref: 'ApiGatewayRestApi' },
+        },
+      },
+    },
+  },
   // import the function via paths
   functions: { importProductsFile, importFileParser },
   package: { individually: true },
